@@ -58,8 +58,18 @@ public class MazeSearch {
             cell.draw(Color.blue);   // to indicate finding the goal
             return true;
         }
-        /*# YOUR CODE HERE */
+        if (cell.isVisited()) { return false; }
 
+        cell.visit();
+        cell.draw(Color.yellow);
+        UI.sleep(delay);
+        for (MazeCell neighbour : cell) {
+            if (exploreFromCell(neighbour)) {
+                return true;
+            }
+        }
+        cell.draw(Color.red);
+        return false;
     }
 
     /** COMPLETION
