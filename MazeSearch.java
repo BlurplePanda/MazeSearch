@@ -64,7 +64,7 @@ public class MazeSearch {
         cell.draw(Color.yellow);
         UI.sleep(delay);
         for (MazeCell neighbour : cell) {
-            if (exploreFromCell(neighbour)) {
+            if (exploreFromCell(neighbour)) { // if goal from a neighbour
                 return true;
             }
         }
@@ -99,7 +99,7 @@ public class MazeSearch {
             exploreFromCellAll(neighbour);
         }
         cell.draw(Color.white);
-        cell.unvisit();
+        cell.unvisit(); //so you can visit it in another path
     }
 
     /** CHALLENGE
@@ -107,8 +107,28 @@ public class MazeSearch {
      * Use Breadth first search.
      */
     public void exploreFromCellShortest(MazeCell start) {
-        /*# YOUR CODE HERE */
-
+        Map<MazeCell, MazeCell> pathLinks = new HashMap<>(); // child, parent
+        Queue<MazeCell> toVisit = new ArrayDeque<>();
+        toVisit.offer(start);
+        while (!toVisit.isEmpty()) {
+            MazeCell cell = toVisit.poll();
+            if (cell == maze.getGoal()) { break; } //if you find the goal on one path, stop
+            cell.visit();
+            for (MazeCell neighbour : cell) {
+                if (!neighbour.isVisited()) {
+                    toVisit.offer(neighbour);
+                    pathLinks.put(neighbour, cell); //record a link to its parent
+                    neighbour.visit(); //stops it being added to queue more than once
+                }
+            }
+        }
+        // draw the path it found
+        maze.getGoal().draw(Color.blue);
+        MazeCell cell = maze.getGoal();
+        while (cell != start) { // follow it back with the map
+            cell = pathLinks.get(cell);
+            cell.draw(Color.yellow);
+        }
     }
 
     //=================================================
